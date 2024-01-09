@@ -1,0 +1,35 @@
+﻿@using QLXE.Utilities
+@model IList<Menu>
+
+@foreach (var menu in Model.Where(m => m.Levels == 1).OrderBy(n => n.MenuOrder))
+{
+    var Pid = menu.MenuID;
+    string url = Functions.TitleSlugGeneration("car", menu.MenuName, menu.MenuID);
+    if (!string.IsNullOrEmpty(menu.Link))
+    {
+        url = menu.Link;
+    }
+    var Smenu = Model.Where(p => p.ParentID == Pid).OrderBy(p => p.MenuOrder).ToList();
+    @if (Smenu.Count == 0)
+    {
+        <a href="/@url" class="nav-item nav-link">@menu.MenuName</a>
+    }
+    else
+    {
+        <div class="nav-item dropdown">
+            <a href="/@url" class="nav-link dropdown-toggle" data-toggle="dropdown">@menu.MenuName</a>
+            <div class="dropdown-menu rounded-0 m-0">
+                @foreach (var smn in Smenu)
+                {
+                    string url1 = Functions.TitleSlugGeneration("car", smn.MenuName, smn.MenuID);
+                    if (!string.IsNullOrEmpty(smn.Link))
+                    {
+                        url1 = smn.Link;
+                    }
+                    <a href="/@url" class="dropdown-item">@smn.MenuName</a>
+                }
+            </div>
+        </div>
+    }
+}
+
